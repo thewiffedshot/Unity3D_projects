@@ -96,8 +96,8 @@ public class Grid
 
         Vector2[] distanceVectors = { new Vector2(pointX, pointY), new Vector2(pointX - 1, pointY), new Vector2(pointX, pointY - 1), new Vector2(pointX - 1, pointY - 1) };
 
-        float value1 = 0, value2 = 0, value3 = 0, value4 = 0;
-        float weighed1 = 0, weighed2 = 0;
+        float[] values = new float[4];
+        float[] weighed = new float[2];
         float amplitude = 0;
 
         List<Point> unitPoints = new List<Point>();
@@ -111,26 +111,26 @@ public class Grid
             switch (n)
             {
                 case 0:
-                    value1 = Vector2.Dot(point.GradientVector, distanceVectors[0]);
+                    values[0] = Vector2.Dot(point.GradientVector, distanceVectors[0]);
                     break;
                 case 1:
-                    value2 = Vector2.Dot(point.GradientVector, distanceVectors[1]);
+                    value[1] = Vector2.Dot(point.GradientVector, distanceVectors[1]);
                     break;
                 case 2:
-                    value3 = Vector2.Dot(point.GradientVector, distanceVectors[2]);
+                    value[2] = Vector2.Dot(point.GradientVector, distanceVectors[2]);
                     break;
                 case 3:
-                    value4 = Vector2.Dot(point.GradientVector, distanceVectors[3]);
+                    value[3] = Vector2.Dot(point.GradientVector, distanceVectors[3]);
                     break;
             }
 
             n++;
         }
 
-        weighed1 = Mathf.Lerp(value1, value2, fadeValue(pointX));
-        weighed2 = Mathf.Lerp(value3, value4, fadeValue(pointX));
+        weighed[0] = Mathf.Lerp(values[0], values[1], fadeValue(pointX));
+        weighed[1] = Mathf.Lerp(values[2], values[3], fadeValue(pointX));
 
-        amplitude = Mathf.Lerp(weighed1, weighed2, fadeValue(pointY));
+        amplitude = Mathf.Lerp(weighed[0], weighed[1], fadeValue(pointY));
 
         return ((amplitude + 1) / 2) * steepnessCoefficient; // Normalize amplitude to range from 0 to 1. (and apply steepness coefficient)
     }
@@ -187,7 +187,7 @@ public class Grid
     }
 }
 
-public class Point
+public struct Point
 {
     private static Vector2[] vectors = { new Vector2(1, 1), new Vector2(-1, 1), new Vector2(1, -1), new Vector2(-1, -1) };
     private Vector2 gradientVector;
